@@ -10,21 +10,26 @@ const Book = () => {
   const dispatch = useDispatch()
 
   // useEffect(() => {
-  //   dispatch({ type: 'FETCH_BOOKS' })
+  //   dispatch({ type: 'FETCH_BOOKS' ,request: { url: '/todo'} })
   // }, [])
 
   return (
-    <ConnectedRequestContainer
-      requestSelector={state => state.books}
-      errorComponent={() => <p>Error...</p>}
-      loadingComponent={() => <p>loading...</p>}
-      noDataMessage={<p>There is no entity currently.</p>}
-    >
-      {({ data }) => <p>{data.toString()}</p>}
-    </ConnectedRequestContainer>
+    <div>
+      <ConnectedRequestContainer
+        requestSelector={state => state.books}
+        errorComponent={() => <p>Error...</p>}
+        loadingComponent={() => <p>loading...</p>}
+        noDataMessage={<p>There is no entity currently.</p>}
+      >
+        {({ data }) => <p>{data.toString()}</p>}
+      </ConnectedRequestContainer>
+      <button onClick={() => dispatch({ type: 'FETCH_BOOKS' ,request: { url: '/todo'} })}>
+        aaa
+      </button>
+    </div>
   )
 }
 
-export default connect(state => state)(Book)
-// export default Book
+// export default connect(state => state)(Book)
+export default Book
 

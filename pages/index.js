@@ -1,27 +1,29 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import { loadData, startClock, tickClock } from '../actions'
 import Page from '../components/page'
 
 class Index extends React.Component {
   static async getInitialProps (props) {
     const { store, isServer } = props.ctx
-    // store.dispatch(tickClock(isServer))
 
-    if (!store.getState().placeholderData) {
-      store.dispatch(loadData())
+    if (store.getState().books.length==0) {
+      store.dispatch({ type: 'FETCH_BOOKS' ,request: { url: '/todo'} })
     }
 
     return { isServer }
   }
 
   componentDidMount () {
-    // this.props.dispatch(startClock())
+    // this.props.dispatch({ type: 'FETCH_BOOKS' ,request: { url: '/todo'} })
   }
 
   render () {
-    return <Page title='Index Page' linkTo='/other' NavigateTo='Other Page' />
+    return (
+      <div>
+        <Page />
+      </div>
+    )
   }
 }
 

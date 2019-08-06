@@ -1,13 +1,17 @@
 import { applyMiddleware, createStore, combineReducers } from 'redux'
 import createSagaMiddleware from 'redux-saga'
+import { requestsReducer } from 'redux-saga-requests'
 
-import reducer, { exampleInitialState } from './reducer'
-import rootSaga from './saga'
-import {fetchBooksReducer} from './actions';
+export const fetchBooksReducer = requestsReducer({ actionType: 'FETCH_BOOKS' })
+
+
 import axios from 'axios'
+import { createRequestInstance, watchRequests } from 'redux-saga-requests';
+import { createDriver } from 'redux-saga-requests-axios';
+
+
 const rootReducer = combineReducers({
-  reducer: reducer,
-  fetchBooksReducer,
+  books: fetchBooksReducer,
 })
 
 const bindMiddleware = middleware => {
@@ -19,16 +23,11 @@ const bindMiddleware = middleware => {
 }
 
 function configureStore (initialState = {
-  count: 0,
-  error: false,
-  lastUpdate: 0,
-  light: false,
-  placeholderData: null,
   books: []
 }) {
   const sagaMiddleware = createSagaMiddleware()
   const store = createStore(
-    reducer,
+    rootReducer,
     initialState,
     bindMiddleware([sagaMiddleware])
   )
@@ -36,6 +35,11 @@ function configureStore (initialState = {
   const axiosInstance = axios.create({
     baseURL: 'https://api2.diandianyy.com/todo/rest',
   })
+
+  function * rootSaga () {
+    yield createRequestInstance({ driver: createDriver(axiosInstance) })
+    yield watchRequests()
+  }
   store.sagaTask = sagaMiddleware.run(rootSaga, axiosInstance)
   // store.runSagaTask = () => {
   //   store.sagaTask = sagaMiddleware.run(rootSaga, axiosInstance);
