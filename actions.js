@@ -1,3 +1,17 @@
+import { requestsReducer } from 'redux-saga-requests'
+
+const FETCH_BOOKS = 'FETCH_BOOKS'
+
+export const fetchBooks = () => ({
+  type: FETCH_BOOKS,
+  request: {
+    url: '/todo',
+  },
+})
+
+export const fetchBooksReducer = requestsReducer({ actionType: FETCH_BOOKS })
+
+
 export const actionTypes = {
   FAILURE: 'FAILURE',
   INCREMENT: 'INCREMENT',

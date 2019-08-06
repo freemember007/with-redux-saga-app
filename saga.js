@@ -6,6 +6,11 @@ import 'isomorphic-unfetch'
 
 import { actionTypes, failure, loadDataSuccess, tickClock } from './actions'
 
+import axios from 'axios'
+import { createRequestInstance, watchRequests } from 'redux-saga-requests';
+import { createDriver } from 'redux-saga-requests-axios';
+
+
 es6promise.polyfill()
 
 function * runClockSaga () {
@@ -26,10 +31,19 @@ function * loadDataSaga () {
   }
 }
 
+const axiosInstance = axios.create({
+  baseURL: 'https://api2.diandianyy.com/todo/rest',
+})
+
 function * rootSaga () {
+  yield createRequestInstance({ driver: createDriver(axiosInstance) }),
+  // yield watchRequests(),
   yield all([
-    call(runClockSaga),
-    takeLatest(actionTypes.LOAD_DATA, loadDataSaga)
+    watchRequests(),
+    call(
+      runClockSaga,
+    ),
+    takeLatest(actionTypes.LOAD_DATA, loadDataSaga),
   ])
 }
 

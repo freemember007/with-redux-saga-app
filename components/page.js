@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 
 import Counter from './counter'
 import Clock from './clock'
+import Book from '../components/Book'
 
 function Page ({
   error,
@@ -18,6 +19,7 @@ function Page ({
       <h1>{title}</h1>
       <Clock lastUpdate={lastUpdate} light={light} />
       <Counter />
+      <Book />
       <nav>
         <Link href={linkTo}>
           <a>Navigate: {NavigateTo}</a>

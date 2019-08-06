@@ -5,7 +5,8 @@ export const exampleInitialState = {
   error: false,
   lastUpdate: 0,
   light: false,
-  placeholderData: null
+  placeholderData: null,
+  // books: null
 }
 
 function reducer (state = exampleInitialState, action) {

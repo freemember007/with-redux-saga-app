@@ -1,8 +1,14 @@
-import { applyMiddleware, createStore } from 'redux'
+import { applyMiddleware, createStore, combineReducers } from 'redux'
 import createSagaMiddleware from 'redux-saga'
 
-import rootReducer, { exampleInitialState } from './reducer'
+import reducer, { exampleInitialState } from './reducer'
 import rootSaga from './saga'
+import {fetchBooksReducer} from './actions';
+import axios from 'axios'
+const rootReducer = combineReducers({
+  reducer: reducer,
+  fetchBooksReducer,
+})
 
 const bindMiddleware = middleware => {
   if (process.env.NODE_ENV !== 'production') {
@@ -12,16 +18,30 @@ const bindMiddleware = middleware => {
   return applyMiddleware(...middleware)
 }
 
-function configureStore (initialState = exampleInitialState) {
+function configureStore (initialState = {
+  count: 0,
+  error: false,
+  lastUpdate: 0,
+  light: false,
+  placeholderData: null,
+  books: []
+}) {
   const sagaMiddleware = createSagaMiddleware()
   const store = createStore(
-    rootReducer,
+    reducer,
     initialState,
     bindMiddleware([sagaMiddleware])
   )
 
-  store.sagaTask = sagaMiddleware.run(rootSaga)
+  const axiosInstance = axios.create({
+    baseURL: 'https://api2.diandianyy.com/todo/rest',
+  })
+  store.sagaTask = sagaMiddleware.run(rootSaga, axiosInstance)
+  // store.runSagaTask = () => {
+  //   store.sagaTask = sagaMiddleware.run(rootSaga, axiosInstance);
+  // };
 
+  // store.runSagaTask()
   return store
 }
 
